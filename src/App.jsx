@@ -5,7 +5,7 @@ import { MyForm } from './components/Form/Form';
 import { Filter } from './components/Filter/Filter';
 import { ContactsList } from './components/ContactsList/ContactsList';
 import { useSelector, useDispatch } from 'react-redux/es/exports';
-import { addItem, deleteItem, filterItems } from 'redux/actions';
+import { addItem, deleteItem, filterItems } from 'redux/reducers';
 
 export function App() {
   const items = useSelector(state => state.items);
