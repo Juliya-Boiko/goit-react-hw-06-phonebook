@@ -5,11 +5,17 @@ import { MyForm } from './components/Form/Form';
 import { Filter } from './components/Filter/Filter';
 import { ContactsList } from './components/ContactsList/ContactsList';
 import { useSelector, useDispatch } from 'react-redux/es/exports';
-import { addItem, deleteItem, filterItems } from 'redux/reducers';
+import {
+  addItem,
+  deleteItem,
+  filterItems,
+  getItemsValue,
+  getFilterValue,
+} from 'redux/slices';
 
 export function App() {
-  const items = useSelector(state => state.items);
-  const filter = useSelector(state => state.filter);
+  const items = useSelector(getItemsValue);
+  const filter = useSelector(getFilterValue);
   const dispatch = useDispatch();
 
   const validateContact = data => {
