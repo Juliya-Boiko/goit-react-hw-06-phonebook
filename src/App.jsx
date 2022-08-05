@@ -1,28 +1,16 @@
 import 'modern-normalize';
-// import { getStorageData } from 'storageUtils/getStorageData';
 import { Container } from './components/common/Container.styled';
 import { Title } from 'components/common/Title.styled';
 import { MyForm } from './components/Form/Form';
 import { Filter } from './components/Filter/Filter';
 import { ContactsList } from './components/ContactsList/ContactsList';
-
 import { useSelector, useDispatch } from 'react-redux/es/exports';
-import { addItem, deleteItem, filterItems } from 'redux/store';
-
-// const LS_KEY = 'contacts';
+import { addItem, deleteItem, filterItems } from 'redux/actions';
 
 export function App() {
   const items = useSelector(state => state.items);
   const filter = useSelector(state => state.filter);
   const dispatch = useDispatch();
-
-  // useEffect(() => {
-  //   setContacts(getStorageData(LS_KEY));
-  // }, []);
-
-  // useEffect(() => {
-  //   localStorage.setItem(LS_KEY, JSON.stringify(contacts));
-  // }, [contacts]);
 
   const validateContact = data => {
     const normalizedValue = data.name.toLowerCase();
@@ -32,13 +20,12 @@ export function App() {
     return result;
   };
 
-  const handlerFilter = evt => {
-    dispatch(filterItems(evt.target.value));
-    console.log(filterItems(evt.target.value));
-  };
-
   const deleteContact = contactId => {
     dispatch(deleteItem(contactId));
+  };
+
+  const handlerFilter = evt => {
+    dispatch(filterItems(evt.target.value));
   };
 
   const handlerSubmit = data => {
