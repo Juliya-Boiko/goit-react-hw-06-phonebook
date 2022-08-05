@@ -1,42 +1,44 @@
 import 'modern-normalize';
-import { useState, useEffect } from 'react';
-import { getStorageData } from 'storageUtils/getStorageData';
+// import { getStorageData } from 'storageUtils/getStorageData';
 import { Container } from './components/common/Container.styled';
 import { Title } from 'components/common/Title.styled';
 import { MyForm } from './components/Form/Form';
 import { Filter } from './components/Filter/Filter';
 import { ContactsList } from './components/ContactsList/ContactsList';
 
-const LS_KEY = 'contacts';
+import { useSelector, useDispatch } from 'react-redux/es/exports';
+import { addItem, deleteItem, filterItems } from 'redux/store';
+
+// const LS_KEY = 'contacts';
 
 export function App() {
-  const [contacts, setContacts] = useState([]);
-  const [filter, setFilter] = useState('');
+  const items = useSelector(state => state.items);
+  const filter = useSelector(state => state.filter);
+  const dispatch = useDispatch();
 
-  useEffect(() => {
-    setContacts(getStorageData(LS_KEY));
-  }, []);
+  // useEffect(() => {
+  //   setContacts(getStorageData(LS_KEY));
+  // }, []);
 
-  useEffect(() => {
-    localStorage.setItem(LS_KEY, JSON.stringify(contacts));
-  }, [contacts]);
+  // useEffect(() => {
+  //   localStorage.setItem(LS_KEY, JSON.stringify(contacts));
+  // }, [contacts]);
 
   const validateContact = data => {
     const normalizedValue = data.name.toLowerCase();
-    const result = contacts.find(item =>
+    const result = items.find(item =>
       item.name.toLowerCase().includes(normalizedValue)
     );
     return result;
   };
 
   const handlerFilter = evt => {
-    setFilter(evt.target.value);
+    dispatch(filterItems(evt.target.value));
+    console.log(filterItems(evt.target.value));
   };
 
   const deleteContact = contactId => {
-    setContacts(prevContacts =>
-      prevContacts.filter(contact => contact.id !== contactId)
-    );
+    dispatch(deleteItem(contactId));
   };
 
   const handlerSubmit = data => {
@@ -44,8 +46,7 @@ export function App() {
       alert(`${data.name} already exist`);
       return;
     } else {
-      setContacts(prevContacts => [...prevContacts, data]);
-      localStorage.setItem(LS_KEY, contacts);
+      dispatch(addItem(data));
     }
   };
 
@@ -57,13 +58,9 @@ export function App() {
       <Filter value={filter} onChange={handlerFilter} />
       <ContactsList
         value={filter}
-        options={contacts}
+        options={items}
         onClickDelete={deleteContact}
       />
     </Container>
   );
 }
-
-// const [contacts, setContacts] = useState(() => {
-//   return JSON.parse(window.localStorage.getItem(LS_KEY) ?? []);
-// });
