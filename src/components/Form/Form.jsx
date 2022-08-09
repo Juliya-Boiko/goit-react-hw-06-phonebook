@@ -1,5 +1,6 @@
-import PropTypes from 'prop-types';
 import { nanoid } from 'nanoid';
+import { useDispatch, useSelector } from 'react-redux';
+import { addItem, getItemsValue } from 'redux/contacts';
 import { Formik, ErrorMessage } from 'formik';
 import {
   ContactForm,
@@ -16,7 +17,18 @@ const mySchema = yup.object().shape({
   number: yup.string().length(7).required(),
 });
 
-export const MyForm = ({ onSubmitForm }) => {
+export const MyForm = () => {
+  const items = useSelector(getItemsValue);
+  const dispatch = useDispatch();
+
+  const validateContact = data => {
+    const normalizedValue = data.name.toLowerCase();
+    const result = items.find(item =>
+      item.name.toLowerCase().includes(normalizedValue)
+    );
+    return result;
+  };
+
   const normalizedNumber = str => {
     const normalizedNumber =
       str[0] + str[1] + str[2] + '-' + str[3] + str[4] + '-' + str[5] + str[6];
@@ -37,7 +49,12 @@ export const MyForm = ({ onSubmitForm }) => {
       name: normalizedName(values.name),
       number: normalizedNumber(values.number),
     };
-    onSubmitForm(newName);
+    if (validateContact(newName)) {
+      alert(`${newName.name} already exist`);
+      return;
+    } else {
+      dispatch(addItem(newName));
+    }
     resetForm();
   };
 
@@ -83,8 +100,4 @@ export const MyForm = ({ onSubmitForm }) => {
       )}
     </Formik>
   );
-};
-
-MyForm.propTypes = {
-  onSubmitForm: PropTypes.func.isRequired,
 };
